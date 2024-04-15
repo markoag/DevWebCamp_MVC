@@ -123,11 +123,19 @@ class ActiveRecord
         $resultado = self::consultarSQL($query);
         return $resultado;
     }
+    // Contar Registros
+    public static function count()
+    {
+        $query = "SELECT count(*) FROM " . static::$tabla . " LIMIT 1";
+        $resultado = self::$db->query($query);
+        $resultado = $resultado->fetch_array();
+        return array_shift($resultado);
+    }
 
     // Busca un registro por su id
     public static function find($id)
     {
-        $query = "SELECT * FROM " . static::$tabla . " WHERE id = ${id}";
+        $query = "SELECT * FROM " . static::$tabla . " WHERE id = $id";
         $resultado = self::consultarSQL($query);
         return array_shift($resultado);
     }
@@ -135,15 +143,21 @@ class ActiveRecord
     // Obtener Registros con cierta cantidad
     public static function get($limite)
     {
-        $query = "SELECT * FROM " . static::$tabla . " LIMIT ${limite} ORDER BY id DESC";
+        $query = "SELECT * FROM " . static::$tabla . " LIMIT $limite ORDER BY id DESC";
         $resultado = self::consultarSQL($query);
         return array_shift($resultado);
     }
+    // Paginar Registros
+    public static function paginar($porPagina, $offset)
+    {
+        $query = "SELECT * FROM " . static::$tabla . " ORDER BY id DESC LIMIT $porPagina OFFSET $offset";
+        return self::consultarSQL($query);
+    }
 
-    // Busqueda Where con Columna 
+    // Busqueda Where con Columna
     public static function where($columna, $valor)
     {
-        $query = "SELECT * FROM " . static::$tabla . " WHERE ${columna} = '${valor}'";
+        $query = "SELECT * FROM " . static::$tabla . " WHERE $columna = '$valor'";
         $resultado = self::consultarSQL($query);
         return array_shift($resultado);
     }
